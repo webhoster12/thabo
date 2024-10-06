@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Education Background</title>
+    <style>
+        body {
+            background-image: url('background.jpg');
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            padding: 20px;
+        }
+        input {
+            width: 80%;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .education-entry {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Education Background</h1>
+        <div id="educationEntries"></div>
+        <button type="button" onclick="addEducationEntry()">Add Another Education</button>
+        <button type="button" onclick="saveEducationDetails()">Save All Education</button>
+        <button onclick="location.href='experience.html'">Next</button>
+        <button onclick="location.href='personal.html'">Back</button>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', loadEducationDetails);
+
+        function loadEducationDetails() {
+            const educationDetails = JSON.parse(localStorage.getItem('educationDetails')) || [];
+            educationDetails.forEach(detail => {
+                addEducationEntry(detail.degree, detail.institution, detail.year);
+            });
+        }
+
+        function addEducationEntry(degree = '', institution = '', year = '') {
+            const educationEntries = document.getElementById('educationEntries');
+            const newEntry = document.createElement('div');
+            newEntry.classList.add('education-entry');
+            newEntry.innerHTML = `
+                <input type="text" class="degree" placeholder="Degree" value="${degree}" required>
+                <input type="text" class="institution" placeholder="Institution" value="${institution}" required>
+                <input type="text" class="year" placeholder="Year of Graduation" value="${year}" required>
+            `;
+            educationEntries.appendChild(newEntry);
+        }
+
+        function saveEducationDetails() {
+            const educationEntries = document.querySelectorAll('.education-entry');
+            const educationDetails = [];
+
+            educationEntries.forEach(entry => {
+                const degree = entry.querySelector('.degree').value;
+                const institution = entry.querySelector('.institution').value;
+                const year = entry.querySelector('.year').value;
+
+                if (degree && institution && year) {
+                    educationDetails.push({ degree, institution, year });
+                }
+            });
+
+            localStorage.setItem('educationDetails', JSON.stringify(educationDetails));
+            alert('Education details saved!');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Details</title>
+    <style>
+        body {
+            background-image: url('background.jpg');
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            padding: 20px;
+        }
+        input, textarea {
+            width: 80%;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Personal Details</h1>
+        <form id="personalForm">
+            <input type="text" id="name" placeholder="Name" required>
+            <input type="text" id="contact" placeholder="Contact Number" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="url" id="linkedin" placeholder="LinkedIn Profile URL">
+            <input type="url" id="facebook" placeholder="Facebook Profile URL">
+            <textarea id="bio" placeholder="Short Bio"></textarea>
+            <button type="button" onclick="savePersonalDetails()">Save</button>
+        </form>
+        <button onclick="location.href='education.html'">Next</button>
+        <button onclick="location.href='index.html'">Back</button>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', loadPersonalDetails);
+
+        function loadPersonalDetails() {
+            const personalDetails = JSON.parse(localStorage.getItem('personalDetails')) || {};
+            document.getElementById('name').value = personalDetails.name || '';
+            document.getElementById('contact').value = personalDetails.contact || '';
+            document.getElementById('email').value = personalDetails.email || '';
+            document.getElementById('linkedin').value = personalDetails.linkedin || '';
+            document.getElementById('facebook').value = personalDetails.facebook || '';
+            document.getElementById('bio').value = personalDetails.bio || '';
+        }
+
+        function savePersonalDetails() {
+            const personalDetails = {
+                name: document.getElementById('name').value,
+                contact: document.getElementById('contact').value,
+                email: document.getElementById('email').value,
+                linkedin: document.getElementById('linkedin').value,
+                facebook: document.getElementById('facebook').value,
+                bio: document.getElementById('bio').value
+            };
+            localStorage.setItem('personalDetails', JSON.stringify(personalDetails));
+            alert('Personal details saved!');
+        }
+    </script>
+</body>
+</html>

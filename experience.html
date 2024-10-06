@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Experience</title>
+    <style>
+        body {
+            background-image: url('background.jpg');
+            background-size: cover;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            padding: 20px;
+        }
+        input {
+            width: 80%;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .experience-entry {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Work Experience</h1>
+        <div id="experienceEntries"></div>
+        <button type="button" onclick="addExperienceEntry()">Add Another Work Experience</button>
+        <button type="button" onclick="saveExperienceDetails()">Save All Experience</button>
+        <button onclick="location.href='projects.html'">Next</button>
+        <button onclick="location.href='education.html'">Back</button>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', loadExperienceDetails);
+
+        function loadExperienceDetails() {
+            const experienceDetails = JSON.parse(localStorage.getItem('experienceDetails')) || [];
+            experienceDetails.forEach(detail => {
+                addExperienceEntry(detail.jobTitle, detail.company, detail.years);
+            });
+        }
+
+        function addExperienceEntry(jobTitle = '', company = '', years = '') {
+            const experienceEntries = document.getElementById('experienceEntries');
+            const newEntry = document.createElement('div');
+            newEntry.classList.add('experience-entry');
+            newEntry.innerHTML = `
+                <input type="text" class="jobTitle" placeholder="Job Title" value="${jobTitle}" required>
+                <input type="text" class="company" placeholder="Company" value="${company}" required>
+                <input type="text" class="years" placeholder="Years (e.g. 2020 - 2021)" value="${years}" required>
+            `;
+            experienceEntries.appendChild(newEntry);
+        }
+
+        function saveExperienceDetails() {
+            const experienceEntries = document.querySelectorAll('.experience-entry');
+            const experienceDetails = [];
+
+            experienceEntries.forEach(entry => {
+                const jobTitle = entry.querySelector('.jobTitle').value;
+                const company = entry.querySelector('.company').value;
+                const years = entry.querySelector('.years').value;
+
+                if (jobTitle && company && years) {
+                    experienceDetails.push({ jobTitle, company, years });
+                }
+            });
+
+            localStorage.setItem('experienceDetails', JSON.stringify(experienceDetails));
+            alert('Work experience details saved!');
+        }
+    </script>
+</body>
+</html>

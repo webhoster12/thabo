@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects & Skills</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            background-image: url('background.jpg'); /* Set background image */
+            background-size: cover;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            padding: 20px;
+        }
+        input {
+            width: 80%;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .project-entry, .profile-picture {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Projects & Skills</h1>
+        <div id="projectEntries">
+            <div class="project-entry">
+                <input type="text" class="project" placeholder="Project Name" required>
+                <input type="text" class="skills" placeholder="Skills Used" required>
+            </div>
+        </div>
+        <button type="button" onclick="addProjectEntry()">Add Another Project</button>
+        <button type="button" onclick="saveProjectDetails()">Save All Projects</button>
+        
+        <div class="profile-picture">
+            <h2>Add Profile Picture</h2>
+            <input type="file" id="profilePic" accept="image/*">
+        </div>
+
+        <button type="button" onclick="downloadCV()">Download CV</button>
+        
+        <button onclick="location.href='contact.html'">Next</button>
+        <button onclick="location.href='experience.html'">Back</button>
+    </div>
+    <script>
+        function addProjectEntry() {
+            const projectEntries = document.getElementById('projectEntries');
+            const newEntry = document.createElement('div');
+            newEntry.classList.add('project-entry');
+            newEntry.innerHTML = `
+                <input type="text" class="project" placeholder="Project Name" required>
+                <input type="text" class="skills" placeholder="Skills Used" required>
+            `;
+            projectEntries.appendChild(newEntry);
+        }
+
+        function saveProjectDetails() {
+            const projects = document.querySelectorAll('.project');
+            const skills = document.querySelectorAll('.skills');
+            const projectDetails = [];
+
+            projects.forEach((project, index) => {
+                if (project.value && skills[index].value) {
+                    projectDetails.push({
+                        project: project.value,
+                        skills: skills[index].value,
+                    });
+                }
+            });
+
+            localStorage.setItem('projectDetails', JSON.stringify(projectDetails));
+            alert('Project details saved!');
+        }
+
+        async function downloadCV() {
+            const { jsPDF } = window.jspdf;
+
+            const personalDetails = JSON.parse(localStorage.getItem('personalDetails')) || {};
+            const educationDetails = JSON.parse(localStorage.getItem('educationDetails')) || [];
+            const experienceDetails = JSON.parse(localStorage.getItem('experienceDetails')) || [];
+            const projectDetails = JSON.parse(localStorage.getItem('projectDetails')) || [];
+
+            const doc = new jsPDF();
+            doc.setFont("helvetica", "normal");
+            doc.text(`CV of ${personalDetails.name || 'Your Name'}`, 10, 10);
+            doc.text(`Contact: ${personalDetails.contact || 'N/A'}`, 10, 20);
+            doc.text(`Email: ${personalDetails.email || 'N/A'}`, 10, 30);
+            doc.text(`LinkedIn: ${personalDetails.linkedin || 'N/A'}`, 10, 40);
+            doc.text(`Facebook: ${personalDetails.facebook || 'N/A'}`, 10, 50);
+            doc.text(`Bio: ${personalDetails.bio || 'No bio provided.'}`, 10, 60);
+            doc.text(`\nEducation:`, 10, 80);
+            
+            if (educationDetails.length === 0) {
+                doc.text(`- No education details provided.`, 10, 90);
+            } else {
+                educationDetails.forEach((ed, index) => {
+                    doc.text(`- ${ed.degree || 'Degree'} from ${ed.institution || 'Institution'} (Graduated: ${ed.year || 'Year'})`, 10, 90 + (index * 10));
+                });
+            }
+
+            doc.text(`\nWork Experience:`, 10, 110 + (educationDetails.length * 10));
+            if (experienceDetails.length === 0) {
+                doc.text(`- No work experience provided.`, 10, 120 + (educationDetails.length * 10));
+            } else {
+                experienceDetails.forEach((exp, index) => {
+                    doc.text(`- ${exp.jobTitle || 'Job Title'} at ${exp.company || 'Company'} (${exp.years || 'Years'})`, 10, 120 + (educationDetails.length * 10) + (index * 10));
+                });
+            }
+
+            doc.text(`\nProjects:`, 10, 140 + (educationDetails.length * 10) + (experienceDetails.length * 10));
+            if (projectDetails.length === 0) {
+                doc.text(`- No projects provided.`, 10, 150 + (educationDetails.length * 10) + (experienceDetails.length * 10));
+            } else {
+                projectDetails.forEach((prj, index) => {
+                    doc.text(`- ${prj.project || 'Project Name'} (Skills: ${prj.skills || 'Skills'})`, 10, 150 + (educationDetails.length * 10) + (experienceDetails.length * 10) + (index * 10));
+                });
+            }
+
+            doc.save('CV.pdf');
+        }
+    </script>
+</body>
+</html>
